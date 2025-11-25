@@ -1,0 +1,15 @@
+[package]
+name = "rust-bitcoin-searcher"
+version = "1.0.22"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"
+bitcoin = "0.31"
+secp256k1 = { version = "0.28", features = ["rand", "global-context"] }
+tokio = { version = "1", features = ["full"] }
+hex = "0.4"
+colored = "2"
+crossterm = "0.27.0"
+clap = { version = "4", features = ["derive"] }
+

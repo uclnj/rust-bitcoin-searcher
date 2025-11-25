@@ -1,0 +1,38 @@
+# --- Rust / Cargo ---
+target/
+Cargo.lock          # ignore for libraries, keep for apps (optional)
+**/*.rs.bk          # rustfmt backups
+
+# --- Build / Output ---
+/*.exe
+/*.dll
+/*.so
+/*.dylib
+*.pdb
+
+# --- IDEs / Editors ---
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains (CLion, IntelliJ, RustRover)
+.idea/
+
+# Vim
+*.swp
+*.swo
+
+# Sublime
+*.sublime-workspace
+*.sublime-project
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+
+# --- Environment / tooling ---
+.env
+.env.*
