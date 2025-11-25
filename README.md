@@ -54,6 +54,8 @@ The output should look similar to this:
 
 It will create/check about 18406050000 addresses per hour.
 
+The --test menu option will calculate a known BTC test address by the hash in the application.  If you place the output BTC address in your chunk file you can verify it's finding the address.
+
 ### Dependencies
 
 This project may require additional dependencies for handling Bitcoin address generation and validation. Ensure that you have the necessary crates specified in `Cargo.toml`.
