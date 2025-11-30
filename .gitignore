@@ -36,3 +36,4 @@ Thumbs.db
 # --- Environment / tooling ---
 .env
 .env.*
+Cargo.lock
