@@ -1,6 +1,7 @@
 use bitcoin::address::Address;
 use bitcoin::key::PrivateKey;
 use bitcoin::Network;
+use clap::Parser;
 use crossterm::{
     cursor::MoveTo,
     execute,
@@ -20,10 +21,13 @@ use std::process;
 use std::sync::mpsc;
 use std::thread;
 use std::time::Instant;
-use clap::Parser;
 
 #[derive(Parser, Debug)]
-#[command(name = "Rust Bitcoin Collider", version = "1.0", about = "Wastes CPU trying to get a collission")]
+#[command(
+    name = "Rust Bitcoin Collider",
+    version = "1.0",
+    about = "Wastes CPU trying to get a collission"
+)]
 struct Args {
     /// Input filename
     filename: String,
@@ -79,10 +83,10 @@ fn main() {
             // make each thread have different batch sizes
             let batch_size = BATCH_SIZE;
             let mut counter: usize = 0;
+            let mut rng = rand::thread_rng();
+            let mut key_bytes = [0u8; 32];
+            rng.fill(&mut key_bytes);
             loop {
-                let mut rng = rand::thread_rng();
-                let mut key_bytes = [0u8; 32];
-                rng.fill(&mut key_bytes);
                 let private_key = PrivateKey::new(
                     bitcoin::secp256k1::SecretKey::from_slice(&key_bytes).unwrap(),
                     Network::Bitcoin,
@@ -96,6 +100,9 @@ fn main() {
                     if tx.send((loop_ms, counter, thread_id, batch)).is_err() {
                         break;
                     }
+                    rng = rand::thread_rng();
+                    key_bytes = [0u8; 32];
+                    rng.fill(&mut key_bytes);
                     batch = Vec::with_capacity(BATCH_SIZE);
                     start = Instant::now();
                 }
@@ -126,6 +133,12 @@ fn main() {
             }
         }
         let end = start.elapsed();
+        let seconds = loop_ms.as_secs_f64();
+        let per_sec = if seconds > 0.0 {
+            (BATCH_SIZE as f64 / seconds) as usize
+        } else {
+            0
+        };
         execute!(
             stdout,
             SetForegroundColor(Color::Yellow),
@@ -135,11 +148,13 @@ fn main() {
             Print("): "),
             SetForegroundColor(Color::Green),
             Print(counter.to_string()),
-            Print(" loop "),
+            Print(" gen: "),
             Print(loop_ms.as_millis()),
-            Print("ms"),
+            Print("ms "),
+            Print(per_sec.to_string()),
+            Print("/sec"),
             SetForegroundColor(Color::Cyan),
-            Print(" batch search "),
+            Print(" search: "),
             Print(end.as_millis()),
             Print("ms"),
             ResetColor
